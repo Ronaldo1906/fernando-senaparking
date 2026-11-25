@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Factura #{{ servicio.id }} - SenaParking{% endblock %}
+{% block content %}
+  <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <div>
+      <small>COMPROBANTE DE SERVICIO</small>
+      <h2 style="margin:4px 0;">SENAPARKING</h2>
+      <div>Factura de parqueo #{{ servicio.id }}</div>
+    </div>
+    <div class="total">${{ "{:,}".format(servicio.total_cobrado).replace(",", ".") }}</div>
+  </div>
+
+  <hr style="margin: 20px 0;">
+
+  <div class="grid">
+    <div><strong>Cliente:</strong> {{ servicio.cliente }}</div>
+    <div><strong>Vehículo:</strong> {{ etiqueta_vehiculo }}</div>
+    <div><strong>Placa / identificación:</strong> {{ servicio.placa }}</div>
+    <div><strong>Modalidad:</strong> {{ servicio.modalidad }}</div>
+    <div><strong>Ingreso:</strong> {{ servicio.fecha_ingreso.strftime('%d/%m/%Y %H:%M') }}</div>
+    <div><strong>Salida:</strong> {{ servicio.fecha_salida.strftime('%d/%m/%Y %H:%M') }}</div>
+    <div><strong>Descuento aplicado:</strong> {{ servicio.descuento_pct }}%</div>
+    <div><strong>Horas registradas:</strong> {{ servicio.horas_facturadas }} h</div>
+  </div>
+
+  <h3 style="margin-top: 24px;">Detalle de valores e impuestos</h3>
+  <table>
+    <tr>
+      <td>Valor neto</td>
+      <td>${{ "{:,}".format(servicio.valor_neto).replace(",", ".") }}</td>
+    </tr>
+    <tr>
+      <td>Impuesto al consumo (1%, discriminado)</td>
+      <td>${{ "{:,}".format(servicio.impuesto_consumo).replace(",", ".") }}</td>
+    </tr>
+    <tr>
+      <td>IVA (19%, discriminado)</td>
+      <td>${{ "{:,}".format(servicio.iva).replace(",", ".") }}</td>
+    </tr>
+    <tr>
+      <td><strong>Total cobrado</strong></td>
+      <td><strong>${{ "{:,}".format(servicio.total_cobrado).replace(",", ".") }}</strong></td>
+    </tr>
+  </table>
+
+  <div class="no-print" style="margin-top: 24px; display:flex; gap:12px;">
+    <a class="btn" href="{{ url_for('index') }}">Nuevo parqueo</a>
+    <button type="button" onclick="window.print()">Imprimir factura</button>
+  </div>
+{% endblock %}

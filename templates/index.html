@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Operación diaria - SenaParking{% endblock %}
+{% block content %}
+  <h2>Registrar y facturar parqueo</h2>
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+  <form method="post">
+    <div class="grid">
+      <div>
+        <label for="cliente">Nombre del cliente</label>
+        <input id="cliente" name="cliente" type="text" required placeholder="Ej. Simón Tolomeo">
+      </div>
+      <div>
+        <label for="placa">Placa / identificación</label>
+        <input id="placa" name="placa" type="text" required placeholder="Ej. FSB79">
+      </div>
+      <div>
+        <label for="tipo_vehiculo">Tipo de vehículo</label>
+        <select id="tipo_vehiculo" name="tipo_vehiculo" required>
+          <option value="automovil">Automóvil</option>
+          <option value="taxi">Taxi</option>
+          <option value="moto">Motocicleta</option>
+          <option value="bicicleta">Bicicleta</option>
+        </select>
+      </div>
+      <div>
+        <label for="modalidad">Modalidad</label>
+        <select id="modalidad" name="modalidad">
+          <option value="auto">Automática según horario/duración</option>
+          <option value="por_hora">Por hora</option>
+          <option value="amanecer">Amanecer</option>
+          <option value="24h">24 horas</option>
+          <option value="semanal">Semanal</option>
+        </select>
+      </div>
+      <div>
+        <label for="fecha_ingreso">Fecha y hora de ingreso</label>
+        <input id="fecha_ingreso" name="fecha_ingreso" type="datetime-local" required>
+      </div>
+      <div>
+        <label for="fecha_salida">Fecha y hora de salida</label>
+        <input id="fecha_salida" name="fecha_salida" type="datetime-local" required>
+      </div>
+    </div>
+    <div style="margin-top: 16px;">
+      <button type="submit">Calcular y generar factura</button>
+    </div>
+  </form>
+
+  <h3 style="margin-top: 32px;">Facturas recientes</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Placa</th>
+        <th>Vehículo</th>
+        <th>Ingreso</th>
+        <th>Total</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in recientes %}
+      <tr>
+        <td>{{ s.cliente }}</td>
+        <td>{{ s.placa }}</td>
+        <td>{{ etiquetas.get(s.tipo_vehiculo, s.tipo_vehiculo) }}</td>
+        <td>{{ s.fecha_ingreso.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>${{ "{:,}".format(s.total_cobrado).replace(",", ".") }}</td>
+        <td><a href="{{ url_for('ver_factura', servicio_id=s.id) }}">Ver factura</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">Aún no hay servicios registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

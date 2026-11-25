@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Historial de servicios - SenaParking{% endblock %}
+{% block content %}
+  <h2>Historial de facturas de parqueo</h2>
+  <form method="get" style="display:flex; gap:10px; margin-bottom:16px;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Buscar por cliente o placa...">
+    <button type="submit">Buscar</button>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Cliente</th>
+        <th>Placa</th>
+        <th>Vehículo</th>
+        <th>Modalidad</th>
+        <th>Ingreso</th>
+        <th>Salida</th>
+        <th>Total</th>
+        <th>Factura</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in servicios %}
+      <tr>
+        <td>{{ s.id }}</td>
+        <td>{{ s.cliente }}</td>
+        <td>{{ s.placa }}</td>
+        <td>{{ etiquetas.get(s.tipo_vehiculo, s.tipo_vehiculo) }}</td>
+        <td>{{ s.modalidad }}</td>
+        <td>{{ s.fecha_ingreso.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ s.fecha_salida.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>${{ "{:,}".format(s.total_cobrado).replace(",", ".") }}</td>
+        <td><a href="{{ url_for('ver_factura', servicio_id=s.id) }}">Ver</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9">No se encontraron registros.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
